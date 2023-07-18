@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:math';
 import 'dart:convert';
 
@@ -550,7 +552,7 @@ class _FourthPageState extends State<FourthPage> {
                   backgroundColor: const Color(0xffffb300),
                 ),
                 onPressed: () async {
-                  DateTime now = new DateTime.now();
+                  DateTime now = DateTime.now();
                   String dateFormat =
                       DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
                   int idx = allDataNotCashier.length;
@@ -577,11 +579,12 @@ class _FourthPageState extends State<FourthPage> {
                   await deleteCart();
 
                   // await delete
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SecondPage(""),
-                      ));
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const SecondPage('')),
+                      (route) => false);
+                  // Navigator.pop(
+                  //   context,
+                  // );
                 },
                 child: const Text(
                   "New Order",

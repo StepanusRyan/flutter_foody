@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:math';
 
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
@@ -228,12 +230,12 @@ class _ThirdPageState extends State<ThirdPage> {
 
                   // await dao.insertCart(cart);
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              // FourthPage(widget.dataMakanan, qty, widget.names)
-                              SecondPage(widget.names)));
+                  Navigator.pop(context);
+                  // context,
+                  // MaterialPageRoute(
+                  //     builder: (context) =>
+                  //         // FourthPage(widget.dataMakanan, qty, widget.names)
+                  // SecondPage(widget.names)));
                   // setState(() {
                   //   widgets.add(Text(widget.dataMakanan.toString()));
                   //   widgets.add(Text(qty));
