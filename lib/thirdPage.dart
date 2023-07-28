@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:math';
 
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
@@ -32,12 +34,21 @@ class ThirdPage extends StatefulWidget {
 
 class _ThirdPageState extends State<ThirdPage> {
   List<Map<String, dynamic>> allCart = [];
-  String qty = "";
+  int qty = 0;
+  int initQty = 0;
   int counter = 0;
+  TextEditingController textInputController = TextEditingController();
+  final GlobalKey<FormState> keyTextInput = GlobalKey<FormState>();
+  @override
+  void didChangeDependencies() {
+    // if (textInputController.text == "") {
+    //   textInputController.text = initQty.toString();
+    // } else {
+    textInputController.text = qty.toString();
+    // }
 
-  TextEditingController textInput = TextEditingController(text: '1');
-
-  // TextEditingController textInput = TextEditingController();
+    super.didChangeDependencies();
+  }
 
   void incrementCounter() {
     setState(() {
@@ -73,16 +84,16 @@ class _ThirdPageState extends State<ThirdPage> {
     refreshData();
   }
 
-  void printTextFieldValue() {
-    qty = textInput.text;
-  }
+  // void printTextFieldValue() {
+  //   qty = textInputController.text;
+  // }
 
-  void handleTextFieldChange(String value) {
-    setState(() {
-      textInput.text = value;
-      qty = value;
-    });
-  }
+  // void handleTextFieldChange(String value) {
+  //   setState(() {
+  //     textInputController.text = value;
+  //     qty = value;
+  //   });
+  // }
 
   Future<void> addData(String food, int price, int qty, String cashier) async {
     await SQLHelper.createData(food, price, qty, cashier);
@@ -159,23 +170,45 @@ class _ThirdPageState extends State<ThirdPage> {
                 Container(
                   width: 350,
                   margin: const EdgeInsets.all(16),
-                  child: TextField(
-                    textAlign: TextAlign.center,
-                    controller: textInput,
-                    onChanged: handleTextFieldChange,
-                    keyboardType: TextInputType.number,
-                    // onChanged: (String value) {
-                    //   // qty = textInput.text;
-                    //   qty = value;
-                    // },
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Color(0xffffb300)),
+                  child: Form(
+                    key: keyTextInput,
+                    child: TextFormField(
+                      textAlign: TextAlign.center,
+                      controller: textInputController,
+                      validator: (value) {
+                        if (value == null || value.isNotEmpty) {
+                          return "Field quantity tidak boleh kosong atau bernilai 0";
+                        }
+                      },
+                      onChanged: (value) {
+                        print("Value onChanged $value");
+                        // if (value == "") {
+                        //   textInputController.text = "0";
+                        // } else {
+                        //   textInputController.text = value;
+                        // }
+                      },
+                      keyboardType: TextInputType.number,
+                      // onChanged: (String value) {
+                      //   // qty = textInput.text;
+                      //   qty = value;
+                      // },
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xffffb300)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Color(0xffffb300))),
+                        hintText: 'Quantity',
                       ),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Color(0xffffb300))),
-                      hintText: 'Quantity',
+                      onSaved: (value) {
+                        print("Value onSaved $value");
+                        if (value == "") {
+                          value = "0";
+                        } else {
+                          value = qty.toString();
+                        }
+                      },
                     ),
                   ),
                 ),
@@ -213,8 +246,18 @@ class _ThirdPageState extends State<ThirdPage> {
                   backgroundColor: const Color(0xffffb300),
                 ),
                 onPressed: () async {
-                  await addData(widget.foodName, widget.price,
-                      int.parse(textInput.text), widget.names);
+                  if (keyTextInput.currentState!.validate()) {
+                    keyTextInput.currentState?.save();
+
+                    await addData(widget.foodName, widget.price,
+                        int.parse(qty.toString()), widget.names);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                // FourthPage(widget.dataMakanan, qty, widget.names)
+                                SecondPage(widget.names)));
+                  }
 
                   // await addData(
                   //     widget.dataMakanan.nama,
@@ -228,12 +271,6 @@ class _ThirdPageState extends State<ThirdPage> {
 
                   // await dao.insertCart(cart);
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              // FourthPage(widget.dataMakanan, qty, widget.names)
-                              SecondPage(widget.names)));
                   // setState(() {
                   //   widgets.add(Text(widget.dataMakanan.toString()));
                   //   widgets.add(Text(qty));

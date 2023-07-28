@@ -132,6 +132,7 @@ class _MyWidgetState extends State<FirstPage> {
                         backgroundColor: const Color(0xffffb300),
                       ),
                       onPressed: () async {
+                        buildShowDialog(context);
                         for (int i = 0; i < listDataMakanan.length; i++) {
                           await addDataMenuToSQL(
                               listDataMakanan[i].nama,
@@ -142,11 +143,17 @@ class _MyWidgetState extends State<FirstPage> {
                         // final DataMakanan food = listDataMakanan[3];
                         // await addDataMenuToSQL(
                         //     food.nama, food.image, food.harga);
-
-                        Navigator.push(
+                        Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => SecondPage(name)));
+                              builder: (context) => SecondPage(name),
+                            ),
+                            (route) => false);
+
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) => SecondPage(name)));
                       },
                       child: const Text(
                         "Submit",
@@ -159,5 +166,18 @@ class _MyWidgetState extends State<FirstPage> {
                 ],
               ),
             )));
+  }
+
+  buildShowDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Center(
+            child: CircularProgressIndicator(
+              color: const Color(0xffffb300),
+            ),
+          );
+        });
   }
 }

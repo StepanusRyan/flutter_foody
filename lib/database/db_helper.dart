@@ -168,4 +168,11 @@ class SQLHelper {
       await db.delete('cart');
     } catch (e) {}
   }
+
+  static Future<void> deleteMenu() async {
+    final db = await SQLHelper.db();
+    try {
+      await db.delete('menus');
+    } catch (e) {}
+  }
 }

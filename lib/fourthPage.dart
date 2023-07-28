@@ -576,12 +576,17 @@ class _FourthPageState extends State<FourthPage> {
                       dateFormat);
                   await deleteCart();
 
-                  // await delete
-                  Navigator.push(
-                      context,
+                  Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
-                        builder: (context) => SecondPage(""),
-                      ));
+                          builder: (context) => const SecondPage("")),
+                      (route) => false);
+
+                  // await delete
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) => SecondPage(""),
+                  //     ));
                 },
                 child: const Text(
                   "New Order",
